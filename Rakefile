@@ -1,4 +1,8 @@
 #!/usr/bin/env rake
+
+$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+require 'themis/version'
+
 begin
   require 'bundler/setup'
 rescue LoadError
@@ -6,10 +10,19 @@ rescue LoadError
 end
 
 
+require "jeweler"
+Jeweler::Tasks.new do |gem|
+  gem.name        = "themis"
+  gem.summary     = "Flexible and modular validations for ActiveRecord models"
+  gem.description = "Flexible and modular validations for ActiveRecord models"
+  gem.email       = ["blake131313@gmail.com"]
+  gem.authors     = ['Potapov Sergey']
+  gem.files       = Dir["{app,config,db,lib}/**/*"] + Dir['Rakefie', 'README.markdown']
+  gem.version     = Themis::VERSION
+end
+
 APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
 load 'rails/tasks/engine.rake'
-
-#Bundler::GemHelper.install_tasks
 
 require 'rspec/core'
 require 'rspec/core/rake_task'
