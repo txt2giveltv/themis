@@ -18,3 +18,5 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
 end
 
 Rake::Task[:spec].enhance ['db:setup']
+
+task :default => :spec
