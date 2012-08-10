@@ -3,6 +3,12 @@ require 'rubygems'
 # Configure Rails Envinronment
 ENV["RAILS_ENV"] ||= "test"
 
+# Run SimpleCov if it's Ruby1.9
+if RUBY_VERSION =~ /^1\.9/
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rspec/autorun'
 require 'rspec/rails'

@@ -1,5 +1,7 @@
 # Themis
 
+Flexible and modular validations for ActiveRecord models
+
 ## Syntax
 
 ### Define validation module
