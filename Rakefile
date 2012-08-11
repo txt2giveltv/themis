@@ -30,6 +30,6 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-Rake::Task[:spec].enhance ['db:setup']
+#Rake::Task[:spec].enhance ['db:setup']
 
 task :default => :spec

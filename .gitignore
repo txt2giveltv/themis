@@ -5,3 +5,9 @@ spec/dummy/db/*.sqlite3
 spec/dummy/log/*.log
 spec/dummy/tmp/
 spec/dummy/.sass-cache
+
+# Make rails vim plugin think it's a rails app to use some shortcuts
+config/environment.rb
+
+# Ignore SimpleCov output
+coverage/

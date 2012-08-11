@@ -9,6 +9,8 @@ if RUBY_VERSION =~ /^1\.9/
   SimpleCov.start
 end
 
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+
 require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rspec/autorun'
 require 'rspec/rails'

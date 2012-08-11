@@ -56,4 +56,4 @@ Flexible and modular validations for ActiveRecord models
     customer.use_validation(:hard)
     customer.valid?
 
-Pay attention there are two class method and instance method: `.use_validation`, `#use_validation`. They are different.
+Pay attention there are  class method and instance method: `.use_validation`, `#use_validation`. They are different.
