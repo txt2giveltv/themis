@@ -31,7 +31,7 @@ module Themis
       if name.to_s =~ /\Avalidates/
         self.validators << Validator.new(name, args)
       else
-        super(name, *args)
+        super
       end
     end
     private :method_missing

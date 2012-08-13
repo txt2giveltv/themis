@@ -3,8 +3,9 @@ require 'rubygems'
 # Configure Rails Envinronment
 ENV["RAILS_ENV"] ||= "test"
 
-# Run SimpleCov if it's Ruby1.9
+# Use pry and run SimpleCov if it's Ruby1.9
 if RUBY_VERSION =~ /^1\.9/
+  require 'pry'
   require 'simplecov'
   SimpleCov.start
 end

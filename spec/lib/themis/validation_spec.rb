@@ -27,8 +27,8 @@ describe Themis::Validation do
 
     context 'when one module is included' do
       context 'in another validation module' do
-        let(:user_validation) do
-          Module.new do
+       let(:user_validation) do
+         Module.new do
             extend Themis::Validation
             include CommonValidation
             validates_uniquness_of :nickname
@@ -44,26 +44,37 @@ describe Themis::Validation do
       end
 
       context 'in ActiveRecord model' do
-        let(:user_class) do
-          Class.new(::ActiveRecord::Base) do
+        before do
+          class User < SpecModel()
             include CommonValidation
           end
         end
 
         it 'should apply defined validations to model' do
-          user_class.should have(2).validators
+          User.should have(2).validators
         end
       end
 
       context 'in another class' do
         it 'should raise error' do
-          expect do
+          expect {
             Class.new { include CommonValidation }
-          end.to raise_error(RuntimeError,
+          }.to raise_error(RuntimeError,
             "Validation module `CommonValidation` can be included only in another " \
             "validation module or in ActiveRecord model"
           )
         end
+      end
+    end
+
+    context 'when other than `validates*` method is used' do
+      it 'should delegate to super' do
+        expect {
+          Module.new do
+            self.extend Themis::Validation
+            stupid_method
+          end
+        }.to raise_error(NameError)
       end
     end
 

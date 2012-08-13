@@ -6,7 +6,7 @@ module Themis
       ActiveSupport.on_load(:active_record) do
 
         ::ActiveRecord::Base.class_eval do
-          include Themis::ActiveRecord::BaseExtension
+          include Themis::ActiveRecordExtension
         end
 
       end  # on_load

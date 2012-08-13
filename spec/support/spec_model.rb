@@ -23,7 +23,7 @@ end
 #    end
 #    ....
 #    SpecModel.cleanup!
-def SpecModel column_definition
+def SpecModel(column_definition = {})
   Class.new(ActiveRecord::Base) do
     self.abstract_class = true
 
