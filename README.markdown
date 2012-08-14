@@ -1,59 +1,127 @@
 # Themis
 
-Flexible and modular validations for ActiveRecord models
+Flexible and modular validation for ActiveRecord models.
 
-## Syntax
+## Usage
 
 ### Define validation module
 
-    module CommonValidation
+    module PersonValidation
       extend Themis::Validation
 
-      validates_presence_of :name
+      validates_presence_of :first_name
+      validates_presence_of :last_name
     end
 
+### Mix validation modules
 
-    module CustomerValidation
+    module UserValidation
       extend Themis::Validation
 
-      include CommonValidation
+      # use all validators defined in PersonValidation
+      include PersonValidation
 
-      validates :email, :email => true
-      validates_presence_of :birthday
+      validates :email, :format => {:with /\A.*@.*\z/ }, :presence => true
+      validate_presence_of :spouse, :if => :married?
     end
 
 ### ActiveRecord model
 
-    class Customer < ActiveRecord::Base
-      # Independently which validation is used it always has an effect.
-      validates_presence_of :status
+#### Including validation modules in models:
 
-      # Validation with module
-      has_validation :hard, HardCustomerValidation, :nested => :customer_account
+You can include validation module in a ActiveRecord model to apply all validators
+defined in module to the model:
 
-      # Use inline validation
-      has_validation :soft, :default => true do |validation|
-        validation.include CommonValidation
-        validation.validates :logged_at, :presence => true
+    class User < ActiveRecord::Base
+      include UserValidation
+    end
+
+It's equivalent to:
+
+    class User < ActiveRecord::Base
+      validates_presence_of :first_name
+      validates_presence_of :last_name
+      validates :email, :format => {:with /\A.*@.*\z/ }, :presence => true
+      validate_presence_of :spouse, :if => :married?
+    end
+
+#### Using has\_validation and use\_validation methods
+
+You can defined a number of validator sets for a model using `.has_validation` method, so you can
+choose with `#use_validation` method which one validator set to use depending on context.
+
+    class User < ActiveRecord::Base
+      has_validation :soft, PersonValidation
+      has_validation :hard, UserValidation
+    end
+
+    user = User.new
+    user.valid?                   # no validators are used
+    user.use_validation(:soft)
+    user.valid?                   # validate first_name and last_name
+    user.use_validation(:hard)
+    user.valid?                   # validate first_name, last_name, email and spouse(if user is married)
+
+    user.use_no_validation
+    user.valid?                   # no validators are used
+
+#### has\_validation syntax
+
+With module:
+
+    has_validation :soft, SoftValidation
+
+With block:
+
+    has_validation :hard do |model|
+      # you can include validation module within block as well
+      model.include SoftValidation
+      model.validate_presence_of :email
+    end
+
+With module and block:
+
+    # It's equivalent to the example above
+    has_validation :hard, SoftValidation do |model|
+      model.validate_presence_of :email
+    end
+
+Option `:default`:
+
+    class User < ActiveRecord::Base
+       has_validation :soft, PersonValidation, :default => true
+    end
+
+    user = User.new
+    user.themis_validation  # => :soft
+
+Option `:nested`:
+
+`:nested` option make `use_validation` method to be called recursively on associations passed to it.
+It receives a symbol or array of symbols with association names.
+
+    class User < ActiveRecord::Base
+      has_one :account
+      has_validation :soft, PersonValidation, :nested => :account
+    end
+
+    class Account < ActiveRecord::Base
+      has_validation :soft do |model|
+        model.validates_presence_of :nickname
       end
     end
 
-### Behaviour
+    user = User.first
+    user.themis_validation            # => nil
+    user.account.themis_validation    # => nil
+    user.use_validation(:soft)
+    user.themis_validation            # => :soft
+    user.account.themis_validation    # => :soft
 
-    customer = Customer.new
-    customer.validation  # => :soft
+## Credits
 
-    # validates_presence_of :status
-    # validates_presence_of :name
-    # validates :logged_at, :presence => true
-    customer.valid?
+* [Potapov Sergey](https://github.com/greyblake)
 
+## Copyright
 
-    # validates_presence_of :status
-    # validates :email, :email => true
-    # validates_presence_of :birthday
-    # run :hard validation on :customer_account
-    customer.use_validation(:hard)
-    customer.valid?
-
-Pay attention there are  class method and instance method: `.use_validation`, `#use_validation`. They are different.
+Copyright (c) 2012 TMX Credit.
