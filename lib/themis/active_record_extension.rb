@@ -20,13 +20,13 @@ module Themis
     module ClassMethods
       # == Usage
       #   class User < ActiveRecord::Base
-      #     use_validation BaseValidation, :as => :base
+      #     has_validation BaseValidation, :as => :base
       #
-      #     use_validation :as => :soft do |model|
+      #     has_validation :as => :soft do |model|
       #       model.validates_presence :name
       #     end
       #
-      #     use_validation BaseExtension :as => :hard, :default => true do |model|
+      #     has_validation BaseExtension :as => :hard, :default => true do |model|
       #       model.validates_presence :phone_number
       #     end
       #   end
@@ -34,7 +34,7 @@ module Themis
       # @param [Module] validation_module optional parameter
       # @option [Symbol] :as name of validation
       # @option [Boolean] :default marks validation as default.
-      def use_validation(*validation_module_and_options, &block)
+      def has_validation(*validation_module_and_options, &block)
         ValidationAttacher.new(self, validation_module_and_options, block).attach!
       end
     end  # module ClassMethods
