@@ -5,6 +5,7 @@ module Themis
 
     autoload :ModelProxy
     autoload :ValidationAttacher
+    autoload :AttachedValidation
 
     def self.included(base)
       base.extend         ClassMethods
@@ -39,16 +40,39 @@ module Themis
     end  # module ClassMethods
 
     module InstanceMethods
-      def use_validation(name)
-        if name.nil?
-          @themis_validation = nil
-        else
-          unless self.class.themis_validations.include?(name.to_sym)
-            raise ArgumentError.new("Unknown validation: `#{name.inspect}`")
-          end
-          @themis_validation = name.to_sym
+      def use_validation(validation_name)
+        name = validation_name.to_sym
+        unless self.class.themis_validations.map(&:name).include?(name)
+          raise ArgumentError.new("Unknown validation: `#{name.inspect}`")
+        end
+        @themis_validation = name
+
+        validation = themis_validations.detect { |tv| tv.name == name }
+        nested = validation.nested
+
+        case nested
+        when Symbol, String
+          set_validation_name_on_assciation(nested, name)
+        when Array
+          nested.each {|assoc| set_validation_name_on_assciation(assoc, name) }
         end
       end
+
+      def use_no_validation
+        @themis_validation = nil
+      end
+
+      def set_validation_name_on_assciation(association, validation_name)
+        target = send(association)
+        case target
+        when Array, ActiveRecord::Associations::CollectionProxy
+          target.each {|obj| obj.send(:use_validation, validation_name) }
+        when ActiveRecord::Base
+          target.send(:use_validation, validation_name)
+        end
+      end
+      private :set_validation_name_on_assciation
+
     end  # module InstanceMethods
 
   end  # module ActiveRecordExtension

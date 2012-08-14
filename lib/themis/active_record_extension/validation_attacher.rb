@@ -10,13 +10,14 @@ module Themis
         @validation_module = validation_module_and_options.first
         @validation_name   = options[:as].try(:to_sym)
         @is_default        = options[:default] || false
+        @nested            = options[:nested]
         @block = block
       end
 
       def attach!
         preinitialize_model_class!
         validate!
-        @model_class.themis_validations << @validation_name
+        @model_class.themis_validations << AttachedValidation.new(@validation_name, :nested => @nested)
         add_conditional_validators!
         add_after_initialize_hook! if @is_default
       end
@@ -61,7 +62,7 @@ module Themis
           raise ArgumentError.new("Validation module or block must be given to `.use_validation` method")
         end
 
-        if @model_class.themis_validations.include?(@validation_name)
+        if @model_class.themis_validations.map(&:name).include?(@validation_name)
           raise ArgumentError.new("validation `#{@validation_name.inspect}` already defined")
         end
 

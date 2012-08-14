@@ -6,7 +6,7 @@ describe Themis::ActiveRecordExtension do
     after  { SpecModel.cleanup! }
 
     before do
-      stub_const("SoftValidation",
+      stub_const("NameValidation",
         Module.new do
           self.extend Themis::Validation
           validates_presence_of :name
@@ -22,7 +22,7 @@ describe Themis::ActiveRecordExtension do
       )
 
       class Book < SpecModel(:name => :string, :author => :string, :rating => :integer)
-        use_validation SoftValidation, :as => :soft
+        use_validation NameValidation, :as => :soft
         use_validation HardValidation, :as => :hard
 
         # common validation
@@ -34,7 +34,7 @@ describe Themis::ActiveRecordExtension do
           model.validates_presence_of :name
         end
 
-        use_validation SoftValidation, :as => :hard do |model|
+        use_validation NameValidation, :as => :hard do |model|
           model.validates_presence_of :artist
         end
       end
@@ -45,7 +45,7 @@ describe Themis::ActiveRecordExtension do
       let(:song) { Song.new }
 
       it "should create validations" do
-        Book.themis_validations.should =~ [:soft, :hard]
+        Book.themis_validations.map(&:name).should =~ [:soft, :hard]
 
         # 1 common validation
         # 1 for soft validation
@@ -76,7 +76,7 @@ describe Themis::ActiveRecordExtension do
           it 'should apply validators of module' do
             class Human < SpecModel(:name => :string, :age => :integer)
               use_validation :as => :base do |model|
-                model.include SoftValidation
+                model.include NameValidation
                 model.validates_numericality_of :age
               end
             end
@@ -90,7 +90,7 @@ describe Themis::ActiveRecordExtension do
         end
       end
 
-      describe 'when not module and no block are passed' do
+      context 'when not module and no block are passed' do
         it 'should raise ArgumentError' do
           expect {
             Class.new(ActiveRecord::Base) do
@@ -100,20 +100,20 @@ describe Themis::ActiveRecordExtension do
         end
       end
 
-      describe 'option :as is not given' do
+      context 'option :as is not given' do
         it 'should raise ArgumentError' do
           expect {
             Class.new(ActiveRecord::Base) do
-              use_validation SoftValidation
+              use_validation NameValidation
             end
           }.to raise_error(ArgumentError, "option `:as` is required for `.use_validation` method")
         end
       end
 
-      describe 'with :default option' do
+      context 'with :default option' do
         it 'should set default validation when object is initialized' do
           class Human < SpecModel(:name => :string)
-            use_validation SoftValidation, :as => :soft, :default => true
+            use_validation NameValidation, :as => :soft, :default => true
           end
           human = Human.new
 
@@ -125,14 +125,14 @@ describe Themis::ActiveRecordExtension do
         it 'should raise ArgumentError when default validation is already specified' do
           expect {
             class Human < SpecModel(:name => :string)
-              use_validation SoftValidation, :as => :soft, :default => true
-              use_validation SoftValidation, :as => :hard, :default => true
+              use_validation NameValidation, :as => :soft, :default => true
+              use_validation NameValidation, :as => :hard, :default => true
             end
           }.to raise_error(ArgumentError, "`:soft` validation is already used as default")
         end
       end
 
-      describe 'when conditional validation is used' do
+      context 'when conditional validation is used' do
         it 'should handle it correctly' do
           stub_const("ConditionalValidation",
             Module.new do
@@ -156,21 +156,86 @@ describe Themis::ActiveRecordExtension do
           alter_mann.should have(1).error_on :name
           junge.should be_valid
 
-          alter_mann.use_validation(nil)
+          alter_mann.use_no_validation
           alter_mann.should be_valid
         end
       end
 
-      describe 'when validation with given name already defined' do
+      context 'when validation with given name already defined' do
         it 'should raise ArgumentError' do
           expect {
             Class.new(ActiveRecord::Base) do
-              use_validation SoftValidation, :as => :soft
+              use_validation NameValidation, :as => :soft
               use_validation HardValidation, :as => 'soft'
             end
           }.to raise_error(ArgumentError, "validation `:soft` already defined")
         end
       end
+
+      context 'with :nested option' do
+        before do
+          class Article < SpecModel(:name => :string, :author_id => :integer, :reviewer_id => :integer)
+            belongs_to :author
+            belongs_to :reviewer, :class_name => "Author"
+
+            use_validation NameValidation, :as => :soft, :nested => :reviewer
+            use_validation NameValidation, :as => :hard
+          end
+
+          class Author < SpecModel(:name => :string)
+            has_many :articles
+            has_many :reviewed_articles, :class_name => "Article"
+
+            belongs_to :friend, :class_name => "Author"
+            has_many :friends, :class_name => "Author"
+
+            use_validation NameValidation, :as => :soft, :nested => :articles
+            use_validation NameValidation, :as => :hard, :nested => [:articles, :friends]
+          end
+
+          @author   = Author.new
+          @reviewer = Author.new
+          @friend   = Author.new
+          @article  = Article.new
+
+          @author.articles << @article
+          @article.author = @author
+
+          @author.friends << @friend
+
+          @article.reviewer = @reviewer
+          @reviewer.reviewed_articles << @article
+
+          @author.themis_validation.should be_nil
+          @article.themis_validation.should be_nil
+          @reviewer.themis_validation.should be_nil
+        end
+
+        context 'as a symbol' do
+          context 'when association is has_many' do
+            it 'should set validation on nested models' do
+              @author.use_validation(:soft)
+              @article.themis_validation.should == :soft
+            end
+          end
+
+          context 'when association is belongs_to' do
+            it 'should set validation on nested model' do
+              @article.use_validation(:soft)
+              @reviewer.themis_validation.should == :soft
+            end
+          end
+        end
+
+        context 'as an array' do
+          it 'should set validation on all listed association' do
+            @author.use_validation(:hard)
+            @author.articles.first.themis_validation.should == :hard
+            @author.friends.first.themis_validation.should == :hard
+          end
+        end
+      end
+
 
     end
 
@@ -181,15 +246,6 @@ describe Themis::ActiveRecordExtension do
         it 'should not use themis validations' do
           book.themis_validation.should be_nil
 
-          book.should_not be_valid
-          book.should have(1).error
-          book.should have(1).error_on :rating
-        end
-      end
-
-      context 'with nil' do
-        it 'should not use any of themis validations' do
-          book.use_validation nil
           book.should_not be_valid
           book.should have(1).error
           book.should have(1).error_on :rating
@@ -226,6 +282,19 @@ describe Themis::ActiveRecordExtension do
           expect { book.use_validation(:undefined_validation) }.
             to raise_error(ArgumentError, "Unknown validation: `:undefined_validation`")
         end
+      end
+    end
+
+
+    describe '#use_no_validation' do
+      let(:book) { Book.new }
+
+      it 'sets themis_validation to nil' do
+        book.use_no_validation
+        book.themis_validation.should be_nil
+        book.should_not be_valid
+        book.should have(1).error
+        book.should have(1).error_on :rating
       end
     end
 
