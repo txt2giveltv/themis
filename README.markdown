@@ -80,7 +80,7 @@ user.valid?                   # no validators are used
 With module:
 
 
-``ruby
+```ruby
 has_validation :soft, SoftValidation
 ```
 
