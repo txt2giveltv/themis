@@ -22,19 +22,19 @@ describe Themis::ActiveRecordExtension do
       )
 
       class Book < SpecModel(:name => :string, :author => :string, :rating => :integer)
-        has_validation NameValidation, :as => :soft
-        has_validation HardValidation, :as => :hard
+        has_validation :soft, NameValidation
+        has_validation :hard, HardValidation
 
         # common validation
         validates_numericality_of :rating
       end
 
       class Song < SpecModel(:name => :string, :artist => :string, :rating => :integer)
-        has_validation :as => :soft do |model|
+        has_validation :soft do |model|
           model.validates_presence_of :name
         end
 
-        has_validation NameValidation, :as => :hard do |model|
+        has_validation :hard, NameValidation do |model|
           model.validates_presence_of :artist
         end
       end
@@ -75,7 +75,7 @@ describe Themis::ActiveRecordExtension do
         context 'and validation module is included in block scope' do
           it 'should apply validators of module' do
             class Human < SpecModel(:name => :string, :age => :integer)
-              has_validation :as => :base do |model|
+              has_validation :base do |model|
                 model.include NameValidation
                 model.validates_numericality_of :age
               end
@@ -94,26 +94,16 @@ describe Themis::ActiveRecordExtension do
         it 'should raise ArgumentError' do
           expect {
             Class.new(ActiveRecord::Base) do
-              has_validation :as => :soft
+              has_validation :soft
             end
           }.to raise_error(ArgumentError, "Validation module or block must be given to `.use_validation` method")
-        end
-      end
-
-      context 'option :as is not given' do
-        it 'should raise ArgumentError' do
-          expect {
-            Class.new(ActiveRecord::Base) do
-              has_validation NameValidation
-            end
-          }.to raise_error(ArgumentError, "option `:as` is required for `.use_validation` method")
         end
       end
 
       context 'with :default option' do
         it 'should set default validation when object is initialized' do
           class Human < SpecModel(:name => :string)
-            has_validation NameValidation, :as => :soft, :default => true
+            has_validation :soft, NameValidation, :default => true
           end
           human = Human.new
 
@@ -125,8 +115,8 @@ describe Themis::ActiveRecordExtension do
         it 'should raise ArgumentError when default validation is already specified' do
           expect {
             class Human < SpecModel(:name => :string)
-              has_validation NameValidation, :as => :soft, :default => true
-              has_validation NameValidation, :as => :hard, :default => true
+              has_validation :soft, NameValidation, :default => true
+              has_validation :hard, NameValidation, :default => true
             end
           }.to raise_error(ArgumentError, "`:soft` validation is already used as default")
         end
@@ -142,7 +132,7 @@ describe Themis::ActiveRecordExtension do
           )
           class Human < SpecModel(:name => :string, :age => :integer)
             attr_accessible :age
-            has_validation ConditionalValidation, :as => :conditional, :default => true
+            has_validation :conditional, ConditionalValidation, :default => true
 
             def old?
               age.to_i > 60
@@ -165,8 +155,8 @@ describe Themis::ActiveRecordExtension do
         it 'should raise ArgumentError' do
           expect {
             Class.new(ActiveRecord::Base) do
-              has_validation NameValidation, :as => :soft
-              has_validation HardValidation, :as => 'soft'
+              has_validation :soft, NameValidation
+              has_validation :soft, HardValidation
             end
           }.to raise_error(ArgumentError, "validation `:soft` already defined")
         end
@@ -178,8 +168,8 @@ describe Themis::ActiveRecordExtension do
             belongs_to :author
             belongs_to :reviewer, :class_name => "Author"
 
-            has_validation NameValidation, :as => :soft, :nested => :reviewer
-            has_validation NameValidation, :as => :hard
+            has_validation :soft, NameValidation, :nested => :reviewer
+            has_validation :hard, NameValidation
           end
 
           class Author < SpecModel(:name => :string)
@@ -189,8 +179,8 @@ describe Themis::ActiveRecordExtension do
             belongs_to :friend, :class_name => "Author"
             has_many :friends, :class_name => "Author"
 
-            has_validation NameValidation, :as => :soft, :nested => :articles
-            has_validation NameValidation, :as => :hard, :nested => [:articles, :friends]
+            has_validation :soft, NameValidation, :nested => :articles
+            has_validation :hard, NameValidation, :nested => [:articles, :friends]
           end
 
           @author   = Author.new

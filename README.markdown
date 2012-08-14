@@ -29,10 +29,10 @@ Flexible and modular validations for ActiveRecord models
       validates_presence_of :status
 
       # Validation with module
-      use_validation HardCustomerValidation, :as => :hard, :nested => :customer_account
+      has_validation :hard, HardCustomerValidation, :nested => :customer_account
 
       # Use inline validation
-      use_validation :as => :soft, :default => true do |validation|
+      has_validation :soft, :default => true do |validation|
         validation.include CommonValidation
         validation.validates :logged_at, :presence => true
       end

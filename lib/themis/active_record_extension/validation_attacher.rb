@@ -3,12 +3,12 @@ module Themis
     # Adds new validation to ActiveRecord model
     class ValidationAttacher
 
-      def initialize(model, validation_module_and_options, block)
-        @model_class = model
+      def initialize(model, name, validation_module_and_options, block)
+        @model_class     = model
+        @validation_name = name
         options = validation_module_and_options.extract_options!
 
         @validation_module = validation_module_and_options.first
-        @validation_name   = options[:as].try(:to_sym)
         @is_default        = options[:default] || false
         @nested            = options[:nested]
         @block = block
@@ -54,10 +54,6 @@ module Themis
       private :preinitialize_model_class!
 
       def validate!
-        unless @validation_name
-          raise(ArgumentError.new("option `:as` is required for `.use_validation` method"))
-        end
-
         if !@validation_module && !@block
           raise ArgumentError.new("Validation module or block must be given to `.use_validation` method")
         end
