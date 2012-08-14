@@ -1,15 +1,29 @@
 module Themis
+  # It's mean to extend other modules to make them be validation modules
+  # Consider it as "parent module" for all validation modules.
+  #
+  # @example define UserValidation
+  #
+  #   module UserValidation
+  #     extend Themis::Validation
+  #
+  #     validates :email   , :presence => true
+  #     validates :nickname, :presence => true
+  #   end
   module Validation
     extend ActiveSupport::Autoload
 
     autoload :Validator
 
+    # Array {Validator validators} defined in module.
+    # @return [Array<Validator>] array of module's validators
     def validators
       @validators ||= []
     end
 
-    # Copy {Validator validators} when module is included.
-    # @param [Module] base another validation module extend with {Themis::Validation}.
+    # When included in another module: copy {Validator validators} to another module.
+    # When included in AcitveRecord model: define validators on model.
+    # @param [Module, ActiveRecord::Base] base another validation module or ActiveRecord model.
     def included(base)
       if base.instance_of?(Module) && base.respond_to?(:validators)
         base.validators.concat(validators)
@@ -20,16 +34,18 @@ module Themis
       end
     end
 
-
-    def method_missing(name, *args)
-      if name.to_s =~ /\Avalidates/
-        self.validators << Validator.new(name, args)
+    # Save all calls of validation methods as array of validators
+    def method_missing(method_name, *args)
+      if method_name.to_s =~ /\Avalidates/
+        self.validators << Validator.new(method_name, args)
       else
         super
       end
     end
     private :method_missing
 
+    # Add validators to model
+    # @param [AcitveRecord::Base] model_class
     def apply_to_model!(model_class)
       validators.each do |validator|
         method, args = validator.name, validator.args
@@ -38,5 +54,5 @@ module Themis
     end
     private :apply_to_model!
 
-  end
-end
+  end  # module Validation
+end  # module Themis

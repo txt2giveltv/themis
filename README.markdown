@@ -1,6 +1,6 @@
 # Themis
 
-Flexible and modular validation for ActiveRecord models.
+Flexible and modular validations for ActiveRecord models.
 
 ## Usage
 

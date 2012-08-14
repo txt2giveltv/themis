@@ -1,6 +1,7 @@
 module Themis
+  # Extends ActiveRecord::Base to make it support has_validation and use_validation
+  # methods.
   module ActiveRecordExtension
-
     extend ActiveSupport::Autoload
 
     autoload :ModelProxy
@@ -8,11 +9,14 @@ module Themis
     autoload :HasValidationMethod
     autoload :UseValidationMethod
 
+    # :nodoc:
     def self.included(base)
       base.extend         ClassMethods
       base.send :include, InstanceMethods
+
       base.class_eval(<<-eoruby, __FILE__, __LINE__+1)
         attr_reader :themis_validation
+
         class_attribute :themis_validation_sets
         class_attribute :themis_default_validation
 
