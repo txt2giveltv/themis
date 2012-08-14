@@ -11,3 +11,7 @@ config/environment.rb
 
 # Ignore SimpleCov output
 coverage/
+
+# yard output
+.yardoc/
+doc/

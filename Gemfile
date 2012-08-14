@@ -7,6 +7,8 @@ gem "rails", "~> 3.2.0"
 
 group :development, :test do
   gem 'jeweler'    , '~> 1.8'
+  gem 'yard'
+
   gem 'rspec-rails', '~> 2.11'
   gem 'sqlite3'
 

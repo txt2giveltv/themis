@@ -4,16 +4,19 @@ module Themis
     extend ActiveSupport::Autoload
 
     autoload :ModelProxy
-    autoload :ValidationAttacher
-    autoload :AttachedValidation
+    autoload :ValidationSet
+    autoload :HasValidationMethod
+    autoload :UseValidationMethod
 
     def self.included(base)
       base.extend         ClassMethods
       base.send :include, InstanceMethods
       base.class_eval(<<-eoruby, __FILE__, __LINE__+1)
         attr_reader :themis_validation
-        class_attribute :themis_validations
+        class_attribute :themis_validation_sets
         class_attribute :themis_default_validation
+
+        delegate :has_themis_validation?, :to => "self.class"
       eoruby
     end
 
@@ -23,44 +26,24 @@ module Themis
       # @option [Symbol] :as name of validation
       # @option [Boolean] :default marks validation as default.
       def has_validation(name, *validation_module_and_options, &block)
-        ValidationAttacher.new(self, name, validation_module_and_options, block).attach!
+        options           = validation_module_and_options.extract_options!
+        validation_module = validation_module_and_options.first
+        HasValidationMethod.new(self, name, validation_module, options, block).execute!
+      end
+
+      def has_themis_validation?(name)
+        themis_validation_sets.keys.include?(name.to_sym)
       end
     end  # module ClassMethods
 
     module InstanceMethods
       def use_validation(validation_name)
-        name = validation_name.to_sym
-        unless self.class.themis_validations.map(&:name).include?(name)
-          raise ArgumentError.new("Unknown validation: `#{name.inspect}`")
-        end
-        @themis_validation = name
-
-        validation = themis_validations.detect { |tv| tv.name == name }
-        nested = validation.nested
-
-        case nested
-        when Symbol, String
-          set_validation_name_on_assciation(nested, name)
-        when Array
-          nested.each {|assoc| set_validation_name_on_assciation(assoc, name) }
-        end
+        UseValidationMethod.new(self, validation_name).execute!
       end
 
       def use_no_validation
         @themis_validation = nil
       end
-
-      def set_validation_name_on_assciation(association, validation_name)
-        target = send(association)
-        case target
-        when Array, ActiveRecord::Associations::CollectionProxy
-          target.each {|obj| obj.send(:use_validation, validation_name) }
-        when ActiveRecord::Base
-          target.send(:use_validation, validation_name)
-        end
-      end
-      private :set_validation_name_on_assciation
-
     end  # module InstanceMethods
 
   end  # module ActiveRecordExtension

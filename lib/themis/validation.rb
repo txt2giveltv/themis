@@ -20,12 +20,6 @@ module Themis
       end
     end
 
-    def apply_to_model!(model_class)
-      validators.each do |validator|
-        method, args = validator.name, validator.args
-        model_class.send(method, *args)
-      end
-    end
 
     def method_missing(name, *args)
       if name.to_s =~ /\Avalidates/
@@ -35,6 +29,14 @@ module Themis
       end
     end
     private :method_missing
+
+    def apply_to_model!(model_class)
+      validators.each do |validator|
+        method, args = validator.name, validator.args
+        model_class.send(method, *args)
+      end
+    end
+    private :apply_to_model!
 
   end
 end

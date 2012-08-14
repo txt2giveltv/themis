@@ -45,7 +45,7 @@ describe Themis::ActiveRecordExtension do
       let(:song) { Song.new }
 
       it "should create validations" do
-        Book.themis_validations.map(&:name).should =~ [:soft, :hard]
+        Book.themis_validation_sets.keys.should =~ [:soft, :hard]
 
         # 1 common validation
         # 1 for soft validation
