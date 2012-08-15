@@ -173,6 +173,8 @@ describe Themis::AR::BaseExtension do
           end
 
           class Author < SpecModel(:name => :string)
+            attr_accessible :name
+
             has_many :articles
             has_many :reviewed_articles, :class_name => "Article"
 
@@ -181,9 +183,10 @@ describe Themis::AR::BaseExtension do
 
             has_validation :soft, NameValidation, :nested => :articles
             has_validation :hard, NameValidation, :nested => [:articles, :friends]
+            has_validation :no_association, NameValidation, :nested => :name
           end
 
-          @author   = Author.new
+          @author   = Author.new(:name => "Rudyard Kipling")
           @reviewer = Author.new
           @friend   = Author.new
           @article  = Article.new
@@ -222,6 +225,13 @@ describe Themis::AR::BaseExtension do
             @author.use_validation(:hard)
             @author.articles.first.themis_validation.should == :hard
             @author.friends.first.themis_validation.should == :hard
+          end
+        end
+
+        context 'when nested option is not an association' do
+          it 'should raise an error' do
+            expect { @author.use_validation :no_association }.
+              to raise_error(RuntimeError, %q[Don't know how to set themis_validation on `"Rudyard Kipling"`])
           end
         end
       end
