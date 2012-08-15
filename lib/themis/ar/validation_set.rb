@@ -1,5 +1,5 @@
 module Themis
-  module ActiveRecordExtension
+  module AR
 
     # Used to store options about validation sets on every single ActiveRecord model class.
     class ValidationSet < Struct.new(:name, :module, :default, :nested, :block)
@@ -10,5 +10,5 @@ module Themis
       end
     end
 
-  end  # ActiveRecordExtension
-end  # Themis
+  end  # module AR
+end  # module Themis

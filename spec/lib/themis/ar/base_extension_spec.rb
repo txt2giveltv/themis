@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Themis::ActiveRecordExtension do
+describe Themis::AR::BaseExtension do
   describe "ActiveRecord::Base" do
 
     after  { SpecModel.cleanup! }

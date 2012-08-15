@@ -1,7 +1,7 @@
 module Themis
-  module ActiveRecordExtension
+  module AR
     # Encapsulates implementation of
-    # {ActiveRecordExtension::ClassMethods#has_validation has_validation} method.
+    # {AR::BaseExtension::ClassMethods#has_validation has_validation} method.
     class HasValidationMethod
       # @param [AcitveRecord::Base] model_class
       # @param [Symbol] name name of validation set
@@ -97,6 +97,6 @@ module Themis
       end
       private :validate!
 
-    end  # class ValidationSetDefiner
-  end  # module ActiveRecordExtension
+    end  # class HasValidationMethod
+  end  # module AR
 end  # module Themis

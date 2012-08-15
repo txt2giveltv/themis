@@ -1,6 +1,6 @@
 module Themis
-  module ActiveRecordExtension
-    # It encapsulates # {ActiveRecordExtension::InstanceMethods::use_validation use_validation}
+  module AR
+    # It encapsulates # {AR::BaseExtension::InstanceMethods#use_validation use_validation}
     # method.
     # It makes a model and its nested associations use another validation.
     class UseValidationMethod
@@ -57,6 +57,6 @@ module Themis
       end
       private :affect_association
 
-    end
-  end
-end
+    end  # class UseValidationMethod
+  end  # module AR
+end  # module Themis

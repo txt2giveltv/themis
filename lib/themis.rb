@@ -4,5 +4,5 @@ module Themis
   extend ActiveSupport::Autoload
 
   autoload :Validation
-  autoload :ActiveRecordExtension
+  autoload :AR
 end

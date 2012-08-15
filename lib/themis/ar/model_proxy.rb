@@ -1,5 +1,5 @@
 module Themis
-  module ActiveRecordExtension
+  module AR
     # It wraps a model class to override validation parameters
     # and add(update) :if option.
     # Also it provides some DSL syntax to include validation modules.
@@ -78,5 +78,5 @@ module Themis
       private :build_opts
 
     end  # class ModelProxy
-  end  # module ActiveRecordExtension
+  end  # module AR
 end  # module Themis

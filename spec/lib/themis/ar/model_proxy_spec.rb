@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Themis::ActiveRecordExtension::ModelProxy do
+describe Themis::AR::ModelProxy do
   let(:model)     { stub(:model)                          }
   let(:condition) { lambda { 1 == 1 }                     }
   let(:proxy)     { described_class.new(model, condition) }
