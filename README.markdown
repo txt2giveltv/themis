@@ -139,6 +139,24 @@ user.themis_validation            # => :soft
 user.account.themis_validation    # => :soft
 ```
 
+# Running specs
+
+To run specs:
+
+```
+rake spec
+```
+
+To verify test coverage use SimpleCov with Ruby 1.9.3:
+
+```
+rvm use 1.9.3
+bundle install
+rake spec
+firefox ./coverage/index.html
+```
+
+
 ## Credits
 
 * [Potapov Sergey](https://github.com/greyblake)
