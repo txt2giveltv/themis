@@ -3,7 +3,7 @@ source "http://rubygems.org"
 def ruby19?; RUBY_VERSION =~ /^1\.9/ ; end
 def ruby18?; RUBY_VERSION =~ /^1\.8/ ; end
 
-gem "rails", "~> 3.2.0"
+gem "rails", "~> 3.0"
 
 group :development, :test do
   gem 'jeweler'    , '~> 1.8'
