@@ -10,6 +10,34 @@ rescue LoadError
 end
 
 
+def gemspec
+  @gem_spec ||= eval( open( `ls *.gemspec`.strip ){|file| file.read } )
+end
+
+def gem_version
+  gemspec.version
+end
+
+def gem_version_tag
+  "v#{gem_version}"
+end
+
+def gem_name
+  gemspec.name
+end
+
+def gem_file_name
+  "#{gem_name}-#{gem_version}.gem"
+end
+
+namespace :gemfury do
+  desc "Build version #{gem_version} into the pkg directory and upload to GemFury"
+  task :push => [:build] do
+    sh "fury push pkg/#{gem_file_name} --as=TMXCredit"
+  end
+end
+
+
 require "jeweler"
 Jeweler::Tasks.new do |gem|
   gem.name        = "themis"
