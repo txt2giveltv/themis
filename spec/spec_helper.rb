@@ -7,7 +7,10 @@ ENV["RAILS_ENV"] ||= "test"
 if RUBY_VERSION =~ /^1\.9/
   require 'pry'
   require 'simplecov'
-  SimpleCov.start
+
+  SimpleCov.start do
+    add_filter "/spec/"
+  end
 end
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
