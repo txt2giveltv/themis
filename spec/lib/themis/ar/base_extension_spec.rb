@@ -154,7 +154,7 @@ describe Themis::AR::BaseExtension do
       context 'when validation with given name already defined' do
         it 'should raise ArgumentError' do
           expect {
-            Class.new(ActiveRecord::Base) do
+            class Article < SpecModel()
               has_validation :soft, NameValidation
               has_validation :soft, HardValidation
             end
