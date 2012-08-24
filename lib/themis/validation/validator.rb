@@ -3,7 +3,7 @@ module Themis
 
     # Simple structure to store information about methods called on
     # {Themis::Validation validation module}. It saves name and arguments
-    # of validation method in order to apply it on model latter.
+    # of validation method in order to apply it on model later.
     class Validator
       attr_reader :name, :args
 

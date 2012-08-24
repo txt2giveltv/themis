@@ -1,6 +1,6 @@
 module Themis
-  # It's mean to extend other modules to make them be validation modules
-  # Consider it as "parent module" for all validation modules.
+  # Extends other modules to make them be validation modules.
+  # Consider it as the "parent module" for all validation modules.
   #
   # @example define UserValidation
   #
@@ -22,7 +22,7 @@ module Themis
     end
 
     # When included in another module: copy {Validator validators} to another module.
-    # When included in AcitveRecord model: define validators on model.
+    # When included in ActiveRecord model: define validators on model.
     # @param [Module, ActiveRecord::Base] base another validation module or ActiveRecord model.
     def included(base)
       if base.instance_of?(Module) && base.respond_to?(:validators)
@@ -45,7 +45,7 @@ module Themis
     private :method_missing
 
     # Add validators to model
-    # @param [AcitveRecord::Base] model_class
+    # @param [ActiveRecord::Base] model_class
     def apply_to_model!(model_class)
       validators.each do |validator|
         method, args = validator.name, validator.args

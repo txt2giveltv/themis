@@ -90,7 +90,7 @@ describe Themis::AR::BaseExtension do
         end
       end
 
-      context 'when not module and no block are passed' do
+      context 'when non-module and no block are passed' do
         it 'should raise ArgumentError' do
           expect {
             Class.new(ActiveRecord::Base) do

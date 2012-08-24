@@ -1,6 +1,6 @@
 module Themis
-  # All stuff related to AcitveRecord.
-  # Mainly it provides {AR::BaseExtension} to extend AcitveRecord::Base.
+  # All stuff related to ActiveRecord.
+  # Mainly it provides {AR::BaseExtension} to extend ActiveRecord::Base.
   module AR
     extend ActiveSupport::Autoload
 

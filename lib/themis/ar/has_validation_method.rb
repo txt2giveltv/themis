@@ -3,7 +3,7 @@ module Themis
     # Encapsulates implementation of
     # {AR::BaseExtension::ClassMethods#has_validation has_validation} method.
     class HasValidationMethod
-      # @param [AcitveRecord::Base] model_class
+      # @param [ActiveRecord::Base] model_class
       # @param [Symbol] name name of validation set
       # @param [Module, nil] validation_module
       # @param [Hash, nil] options
@@ -28,9 +28,9 @@ module Themis
 
 
       # Unless themis_validation_sets and themis_default_validation
-      # is set then set them. Is necessary to do in every inheritor
-      # of AcitveRecord::Base to not overrides values for all
-      # AcitveRecord::Base hierarchy.
+      # is set, then set them. This is necessary to do in every inheritor
+      # of ActiveRecord::Base to avoid overriding values for the entire
+      # ActiveRecord::Base hierarchy.
       def preinitialize_model_class!
         @model_class.themis_validation_sets    ||= {}
         @model_class.themis_default_validation ||= nil
@@ -51,7 +51,7 @@ module Themis
       private :register_validation_set!
 
 
-      # Add conditional validation to AcitveRecord model.
+      # Add conditional validation to ActiveRecord model.
       def add_conditional_validators!
         # Define local variable to have ability to pass its value to lambda
         validation_name = @name

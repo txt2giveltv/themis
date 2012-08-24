@@ -18,7 +18,7 @@ module Themis
       end
 
       # Affect model and its nested associations.
-      # Make them use new validation set by assigning `@themis_validation`
+      # Make them use the new validation set by assigning `@themis_validation`
       # instance variable.
       def execute!
         # NOTE: It breaks encapsulation of ActiveRecord model.

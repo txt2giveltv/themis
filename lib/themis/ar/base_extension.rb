@@ -36,7 +36,7 @@ module Themis
         #   @param [Hash] options options: :default, :nested
         #   @param [Proc] block proc which receives {ModelProxy} and defines validators
         #   @option options [Boolean] :default make it validation be used by default
-        #   @option options [Symbol, Array<Symbol>] :nested association which should be affect when validation {#use_validation} is called
+        #   @option options [Symbol, Array<Symbol>] :nested association which should be affected when validation {#use_validation} is called
         #
         # @overload has_validation(name, validation_module, options, &block)
         #   Declare validation set on model using {Themis::Validation validation module} or(and) block.
