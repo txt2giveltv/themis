@@ -74,7 +74,7 @@ module Themis
         # Define local variable to have ability to pass its value to proc
         validation_name = @name
         @model_class.themis_default_validation = validation_name
-        @model_class.after_initialize { @themis_validation = validation_name }
+        @model_class.after_initialize { use_validation(validation_name) }
       end
       private :add_after_initialize_hook!
 
