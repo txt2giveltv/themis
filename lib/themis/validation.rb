@@ -36,7 +36,7 @@ module Themis
 
     # Save all calls of validation methods as array of validators
     def method_missing(method_name, *args)
-      if method_name.to_s =~ /\Avalidates/
+      if method_name.to_s =~ /\Avalidate/
         self.validators << Themis::Validation::Validator.new(method_name, args)
       else
         super
