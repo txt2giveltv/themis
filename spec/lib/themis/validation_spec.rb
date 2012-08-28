@@ -44,14 +44,31 @@ describe Themis::Validation do
       end
 
       context 'in ActiveRecord model' do
-        before do
-          class User < SpecModel()
+        it 'should apply defined validations to model' do
+          class User < SpecModel(:name => :string)
             include CommonValidation
           end
+          User.should have(2).validators
         end
 
-        it 'should apply defined validations to model' do
-          User.should have(2).validators
+        it "should work with .validate method" do
+          stub_const("BasicValidation",
+            Module.new do
+              self.extend Themis::Validation
+              validate :validate_weight
+
+              def validate_weight
+                errors.add(:weight, "invalid")
+              end
+            end
+          )
+
+          class Thing < SpecModel(:weight => :integer)
+            include BasicValidation
+          end
+
+          thing = Thing.new
+          thing.should have(1).error_on(:weight)
         end
       end
 
