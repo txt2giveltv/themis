@@ -1,3 +1,4 @@
 --format nested
 --color
 --order rand
+--profile

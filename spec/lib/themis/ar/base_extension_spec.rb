@@ -120,6 +120,26 @@ describe Themis::AR::BaseExtension do
             end
           }.to raise_error(ArgumentError, "`:soft` validation is already used as default")
         end
+
+        it 'should affect nested models' do
+          class Human < SpecModel(:name => :string, :location_id => :integer)
+            attr_accessible :location
+            has_validation :soft, NameValidation, :nested => :location, :default => true
+            belongs_to :location
+          end
+
+          class Location < SpecModel(:planet => :string)
+            has_many :humans
+            has_validation :soft do |model|
+              model.validates_presence_of :planet
+            end
+          end
+
+          location = Location.new
+          human    = Human.new(:location => location)
+          human.themis_validation.should == :soft
+          location.themis_validation.should == :soft
+        end
       end
 
       context 'when conditional validation is used' do
