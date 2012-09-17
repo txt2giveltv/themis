@@ -81,10 +81,6 @@ module Themis
 
       # Run validation to be sure that minimum of necessary parameters were passed.
       def validate!
-        if !@module && !@block
-          raise ArgumentError.new("Validation module or block must be given to `.use_validation` method")
-        end
-
         if @model_class.has_themis_validation?(@name)
           raise ArgumentError.new("validation `#{@name.inspect}` already defined")
         end

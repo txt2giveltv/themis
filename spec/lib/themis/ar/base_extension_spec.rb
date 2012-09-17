@@ -91,12 +91,12 @@ describe Themis::AR::BaseExtension do
       end
 
       context 'when non-module and no block are passed' do
-        it 'should raise ArgumentError' do
+        it 'should not raise ArgumentError' do
           expect {
             Class.new(ActiveRecord::Base) do
               has_validation :soft
             end
-          }.to raise_error(ArgumentError, "Validation module or block must be given to `.use_validation` method")
+          }.to_not raise_error
         end
       end
 
