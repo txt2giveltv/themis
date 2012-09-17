@@ -259,46 +259,96 @@ describe Themis::AR::BaseExtension do
     end
 
     describe '.nested_validation_on' do
-      before do
-        class Post < SpecModel(:author_id => :integer)
-          belongs_to :author
+      context 'flatten arguments' do
+        before do
+          class Post < SpecModel(:author_id => :integer)
+            belongs_to :author
 
-          has_validation :soft
-          has_validation :hard
+            has_validation :soft
+            has_validation :hard
+          end
+
+          class Comment < SpecModel(:author_id => :integer, :post_id => :integer)
+            belongs_to :author
+            belongs_to :post
+
+            has_validation :soft
+            has_validation :hard
+          end
+
+          class Author < SpecModel()
+            has_many :posts
+            has_many :comments
+
+            nested_validation_on :posts, :comments
+            has_validation :soft
+            has_validation :hard
+          end
+
+          @author = Author.new
+          @author.posts << Post.new
+          @author.comments << Comment.new
         end
 
-        class Comment < SpecModel(:author_id => :integer, :post_id => :integer)
-          belongs_to :author
-          belongs_to :post
+        it 'should set default :nested option for all validations' do
+          @author.themis_validation.should be_nil
+          @author.use_validation(:soft)
 
-          has_validation :soft
-          has_validation :hard
+          @author.themis_validation.should == :soft
+          @author.posts.first.themis_validation.should == :soft
+          @author.comments.first.themis_validation.should == :soft
         end
 
-        class Author < SpecModel()
-          has_many :posts
-          has_many :comments
-
-          nested_validation_on :posts, :comments
-          has_validation :soft
-          has_validation :hard
+        it 'should raise error when default validation is already defined' do
+          expect { Author.nested_validation_on(:comments) }.
+            to raise_error(ArgumentError, "default nested validation is already defined: `[:posts, :comments]`")
         end
-
-
-        @author = Author.new
-        @author.posts << Post.new
-        @author.comments << Comment.new
       end
 
-      it 'should set default :nested option for all validations' do
-        @author.themis_validation.should be_nil
-        @author.use_validation(:soft)
+      context 'nested arguments' do
+        before do
+          class Post < SpecModel(:author_id => :integer)
+            belongs_to :author
+            has_many :comments
 
-        @author.themis_validation.should == :soft
-        @author.posts.first.themis_validation.should == :soft
-        @author.comments.first.themis_validation.should == :soft
+            has_validation :soft
+            has_validation :hard
+          end
+
+          class Comment < SpecModel(:post_id => :integer)
+            belongs_to :post
+
+            has_validation :soft
+            has_validation :hard
+          end
+
+          class Author < SpecModel()
+            has_many :posts
+
+            nested_validation_on :posts => :comments
+            has_validation :soft
+            has_validation :hard
+          end
+
+          @comment = Comment.new
+          @post    = Post.new
+          @author  = Author.new
+          @post.comments << @comment
+          @author.posts << @post
+        end
+
+        it 'should effect on deep nested models' do
+          @author.themis_validation.should be_nil
+          @post.themis_validation.should be_nil
+          @comment.themis_validation.should be_nil
+
+          @author.use_validation(:soft)
+
+          @author.themis_validation.should == :soft
+          @post.themis_validation.should == :soft
+          @comment.themis_validation.should == :soft
+        end
       end
-
     end
 
     describe "#use_validation" do

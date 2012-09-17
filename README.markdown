@@ -162,6 +162,12 @@ class User
 end
 ```
 
+Also `nested_validation_on` supports deep nesting:
+
+class User
+  nested_validation_on :preferences, :info => [:email, :history]
+end
+
 # Running specs
 
 To run specs:
