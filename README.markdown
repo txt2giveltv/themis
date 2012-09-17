@@ -139,6 +139,29 @@ user.themis_validation            # => :soft
 user.account.themis_validation    # => :soft
 ```
 
+#### Using nested\_validation\_on method
+
+If you don't wanna duplicate yourself with `:nested` option:
+
+```ruby
+class User
+  has_validation :none, NoneValidation, :nested => [:accounts, :preferences, :info]
+  has_validation :soft, SoftValidation, :nested => [:accounts, :preferences, :info]
+  has_validation :hard, HardValidation, :nested => [:accounts, :preferences, :info]
+end
+```
+
+You can use `nested_validation_on` method:
+
+```ruby
+class User
+  nested_validation_on :accounts, :preferences, :info
+  has_validation :none, NoneValidation
+  has_validation :soft, SoftValidation
+  has_validation :hard, HardValidation
+end
+```
+
 # Running specs
 
 To run specs:

@@ -256,6 +256,48 @@ describe Themis::AR::BaseExtension do
         end
       end
 
+    end
+
+    describe '.nested_validation_on' do
+      before do
+        class Post < SpecModel(:author_id => :integer)
+          belongs_to :author
+
+          has_validation :soft
+          has_validation :hard
+        end
+
+        class Comment < SpecModel(:author_id => :integer, :post_id => :integer)
+          belongs_to :author
+          belongs_to :post
+
+          has_validation :soft
+          has_validation :hard
+        end
+
+        class Author < SpecModel()
+          has_many :posts
+          has_many :comments
+
+          nested_validation_on :posts, :comments
+          has_validation :soft
+          has_validation :hard
+        end
+
+
+        @author = Author.new
+        @author.posts << Post.new
+        @author.comments << Comment.new
+      end
+
+      it 'should set default :nested option for all validations' do
+        @author.themis_validation.should be_nil
+        @author.use_validation(:soft)
+
+        @author.themis_validation.should == :soft
+        @author.posts.first.themis_validation.should == :soft
+        @author.comments.first.themis_validation.should == :soft
+      end
 
     end
 

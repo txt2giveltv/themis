@@ -6,6 +6,7 @@ module Themis
     # * themis_validation - name of validation, symbol or nil
     # * themis_validation_sets - hash where key is symbol(validation name) and value is {ValidationSet}.
     # * themis_default_validation - name of default validation.
+    # * themis_default_nested - default value for :nested option
     module BaseExtension
       extend ActiveSupport::Autoload
 
@@ -19,6 +20,7 @@ module Themis
 
           class_attribute :themis_validation_sets
           class_attribute :themis_default_validation
+          class_attribute :themis_default_nested
 
           delegate :has_themis_validation?, :to => "self.class"
         eoruby
@@ -58,6 +60,18 @@ module Themis
         # @param [Symbol] name name of validation set
         def has_themis_validation?(name)
           themis_validation_sets.keys.include?(name.to_sym)
+        end
+
+        # Set default value of :nested option for validations
+        # @example
+        #   nested_validation_on :author
+        #
+        # @example
+        #   nested_validation_on :author, :comments
+        #
+        # @param [Array<Symbol>] associations an association or associations which should be effected
+        def nested_validation_on(*associations)
+          self.themis_default_nested = associations
         end
       end  # module ClassMethods
 
