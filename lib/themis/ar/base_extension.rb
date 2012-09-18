@@ -62,7 +62,7 @@ module Themis
           themis_validation_sets.keys.include?(name.to_sym)
         end
 
-        # Set default value of :nested option for validations
+        # Set the default value of the +:nested+ option for validations.
         # @example
         #   nested_validation_on :author
         #
@@ -78,8 +78,8 @@ module Themis
             raise ArgumentError, "default nested validation is already defined: `#{themis_default_nested.inspect}`"
           end
 
-          args = args.flatten
-          deep_nested = args.extract_options!
+          args         = args.flatten
+          deep_nested  = args.extract_options!
           associations = args + deep_nested.keys
 
           # Set themis_default_nested for current model
@@ -87,7 +87,7 @@ module Themis
 
           # Iterate over associations and recursively call #nested_validation_on
           deep_nested.each do |association_name, nested|
-            reflection = reflect_on_association(association_name)
+            reflection  = reflect_on_association(association_name)
             model_class = reflection.class_name.constantize
             model_class.nested_validation_on(nested)
           end
