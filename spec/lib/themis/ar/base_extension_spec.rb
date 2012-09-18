@@ -258,7 +258,7 @@ describe Themis::AR::BaseExtension do
 
     end
 
-    describe '.nested_validation_on' do
+    describe '.use_nested_validation_on' do
       context 'flatten arguments' do
         before do
           class Post < SpecModel(:author_id => :integer)
@@ -280,7 +280,7 @@ describe Themis::AR::BaseExtension do
             has_many :posts
             has_many :comments
 
-            nested_validation_on :posts, :comments
+            use_nested_validation_on :posts, :comments
             has_validation :soft
             has_validation :hard
           end
@@ -300,7 +300,7 @@ describe Themis::AR::BaseExtension do
         end
 
         it 'should raise error when default validation is already defined' do
-          expect { Author.nested_validation_on(:comments) }.
+          expect { Author.use_nested_validation_on(:comments) }.
             to raise_error(ArgumentError, "default nested validation is already defined: `[:posts, :comments]`")
         end
       end
@@ -325,7 +325,7 @@ describe Themis::AR::BaseExtension do
           class Author < SpecModel()
             has_many :posts
 
-            nested_validation_on :posts => :comments
+            use_nested_validation_on :posts => :comments
             has_validation :soft
             has_validation :hard
           end

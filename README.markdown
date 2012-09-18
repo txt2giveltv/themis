@@ -138,7 +138,7 @@ user.themis_validation            # => :soft
 user.account.themis_validation    # => :soft
 ```
 
-#### Using nested\_validation\_on method
+#### Using use\_nested\_validation\_on method
 
 If you don't want to repeat yourself with the `:nested` option:
 
@@ -150,22 +150,22 @@ class User
 end
 ```
 
-You can use `nested_validation_on` method:
+You can use `use_nested_validation_on` method:
 
 ```ruby
 class User
-  nested_validation_on :accounts, :preferences, :info
+  use_nested_validation_on :accounts, :preferences, :info
   has_validation :none, NoneValidation
   has_validation :soft, SoftValidation
   has_validation :hard, HardValidation
 end
 ```
 
-Also `nested_validation_on` supports deep nesting:
+Also `use_nested_validation_on` supports deep nesting:
 
 ```ruby
 class User
-  nested_validation_on :preferences, :info => [:email, :history]
+  use_nested_validation_on :preferences, :info => [:email, :history]
 end
 ```
 
