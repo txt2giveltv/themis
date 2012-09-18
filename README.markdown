@@ -33,8 +33,8 @@ end
 
 #### Including validation modules in models:
 
-You can include validation module in a ActiveRecord model to apply all validators
-defined in module to the model:
+You can include a validation module in a ActiveRecord model to apply to the model all validators
+defined in the module:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -55,8 +55,8 @@ end
 
 #### Using has\_validation and use\_validation methods
 
-You can defined a number of validator sets for a model using `.has_validation` method, so you can
-choose with `#use_validation` method which one validator set to use depending on context.
+You can define a number of validator sets for a model using the `.has_validation` method. So you can
+choose with the `#use_validation` method which validator set to use depending on the context.
 
 ```ruby
 class User < ActiveRecord::Base
@@ -77,14 +77,13 @@ user.valid?                   # no validators are used
 
 #### has\_validation syntax
 
-With module:
-
+##### With module:
 
 ```ruby
 has_validation :soft, SoftValidation
 ```
 
-With block:
+##### With block:
 
 ```ruby
 has_validation :hard do |model|
@@ -94,7 +93,7 @@ has_validation :hard do |model|
 end
 ```
 
-With module and block:
+##### With module and block:
 
 ```ruby
 # It's equivalent to the example above
@@ -103,7 +102,7 @@ has_validation :hard, SoftValidation do |model|
 end
 ```
 
-Option `:default`:
+##### Option `:default`:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -114,9 +113,9 @@ user = User.new
 user.themis_validation  # => :soft
 ```
 
-Option `:nested`:
+##### Option `:nested`:
 
-`:nested` option make `use_validation` method to be called recursively on associations passed to it.
+The `:nested` option causes the `use_validation` method to be called recursively on associations passed to it.
 It receives a symbol or array of symbols with association names.
 
 ```ruby
@@ -137,6 +136,37 @@ user.account.themis_validation    # => nil
 user.use_validation(:soft)
 user.themis_validation            # => :soft
 user.account.themis_validation    # => :soft
+```
+
+#### Using use\_nested\_validation\_on method
+
+If you don't want to repeat yourself with the `:nested` option:
+
+```ruby
+class User
+  has_validation :none, NoneValidation, :nested => [:accounts, :preferences, :info]
+  has_validation :soft, SoftValidation, :nested => [:accounts, :preferences, :info]
+  has_validation :hard, HardValidation, :nested => [:accounts, :preferences, :info]
+end
+```
+
+You can use `use_nested_validation_on` method:
+
+```ruby
+class User
+  use_nested_validation_on :accounts, :preferences, :info
+  has_validation :none, NoneValidation
+  has_validation :soft, SoftValidation
+  has_validation :hard, HardValidation
+end
+```
+
+Also `use_nested_validation_on` supports deep nesting:
+
+```ruby
+class User
+  use_nested_validation_on :preferences, :info => [:email, :history]
+end
 ```
 
 # Running specs

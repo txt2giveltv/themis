@@ -26,7 +26,8 @@ module Themis
         # -- sergey.potapov 2012-08-14
         @model.instance_variable_set("@themis_validation", @new_name)
 
-        if nested = @new_validation_set.nested
+        nested = @new_validation_set.nested || @model.class.themis_default_nested
+        if nested
           association_names = Array.wrap(nested)
           affect_associations(association_names)
         end
