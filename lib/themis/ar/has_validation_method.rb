@@ -82,7 +82,6 @@ module Themis
       # Add before_validation hook to make all nested models use same
       # validation set.
       def add_before_validation_hook!
-        # Define local variable to have ability to pass its value to proc
         @model_class.before_validation do
           themis_validation ? use_validation(themis_validation) : use_no_validation
         end
