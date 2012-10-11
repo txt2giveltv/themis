@@ -24,6 +24,7 @@ module Themis
         register_validation_set!
         add_conditional_validators!
         add_after_initialize_hook! if @default
+        add_before_validation_hook!
       end
 
 
@@ -78,6 +79,15 @@ module Themis
       end
       private :add_after_initialize_hook!
 
+      # Add before_validation hook to make all nested models use same
+      # validation set.
+      def add_before_validation_hook!
+        # Define local variable to have ability to pass its value to proc
+        @model_class.before_validation do
+          themis_validation ? use_validation(themis_validation) : use_no_validation
+        end
+      end
+      private :add_before_validation_hook!
 
       # Run validation to be sure that minimum of necessary parameters were passed.
       def validate!
