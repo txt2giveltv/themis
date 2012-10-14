@@ -82,13 +82,12 @@ module Themis
       # Run validation to be sure that minimum of necessary parameters were passed.
       def validate!
         if @model_class.has_themis_validation?(@name)
-          raise ArgumentError.new("validation `#{@name.inspect}` already defined")
+          warn "WARNING: validation `#{@name}` is already defined on #{@model_class}"
         end
 
         if @default && @model_class.themis_default_validation
-          msg = "`#{@model_class.themis_default_validation.inspect}` " \
-                "validation is already used as default"
-          raise ArgumentError.new(msg)
+          warn "WARNING: validation `#{@model_class.themis_default_validation}` " \
+               "is already used as default on #{@model_class}"
         end
       end
       private :validate!

@@ -75,7 +75,8 @@ module Themis
         # @param [Array<Symbol>, Hash] args an association or associations which should be effected
         def use_nested_validation_on(*args)
           if themis_default_nested
-            raise ArgumentError, "default nested validation is already defined: `#{themis_default_nested.inspect}`"
+            warn "WARNING: default nested validation is already defined: " \
+                 "`#{themis_default_nested.inspect}` on #{self}"
           end
 
           args         = args.flatten
