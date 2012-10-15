@@ -1,6 +1,18 @@
 require 'spec_helper'
 
 describe Themis::AR::BaseExtension do
+  # Test that message is written to error output.
+  # @param [String] message expected message
+  # @param [Proc] block block of code which causes error message
+  def expect_to_warn(message, &block)
+    @orig_stderr = $stderr
+    $stderr = StringIO.new
+    yield
+    $stderr.string.should include(message)
+  ensure
+    $stderr = @orig_stderr
+  end
+
   describe "ActiveRecord::Base" do
 
     after  { SpecModel.cleanup! }
@@ -112,13 +124,14 @@ describe Themis::AR::BaseExtension do
           human.should have(1).error_on :name
         end
 
-        it 'should raise ArgumentError when default validation is already specified' do
-          expect {
+        it 'should warn when default validation is already specified' do
+          msg = 'WARNING: validation `soft` is already used as default on Human'
+          expect_to_warn(msg) do
             class Human < SpecModel(:name => :string)
               has_validation :soft, NameValidation, :default => true
               has_validation :hard, NameValidation, :default => true
             end
-          }.to raise_error(ArgumentError, "`:soft` validation is already used as default")
+          end
         end
 
         it 'should affect nested models' do
@@ -172,13 +185,14 @@ describe Themis::AR::BaseExtension do
       end
 
       context 'when validation with given name already defined' do
-        it 'should raise ArgumentError' do
-          expect {
+        it 'should warn' do
+          msg = "WARNING: validation `soft` is already defined on Article"
+          expect_to_warn(msg) do
             class Article < SpecModel()
               has_validation :soft, NameValidation
               has_validation :soft, HardValidation
             end
-          }.to raise_error(ArgumentError, "validation `:soft` already defined")
+          end
         end
       end
 
@@ -299,9 +313,11 @@ describe Themis::AR::BaseExtension do
           @author.comments.first.themis_validation.should == :soft
         end
 
-        it 'should raise error when default validation is already defined' do
-          expect { Author.use_nested_validation_on(:comments) }.
-            to raise_error(ArgumentError, "default nested validation is already defined: `[:posts, :comments]`")
+        it 'should warn when default validation is already defined' do
+          msg = "WARNING: default nested validation is already defined: `[:posts, :comments]` on Author"
+          expect_to_warn(msg) do
+            Author.use_nested_validation_on(:comments)
+          end
         end
       end
 
