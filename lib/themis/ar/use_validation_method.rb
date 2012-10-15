@@ -58,8 +58,6 @@ module Themis
           target.each {|obj| obj.send(:use_validation, @new_name) }
         when ActiveRecord::Base
           target.send(:use_validation, @new_name)
-        when NilClass
-          # do nothing
         else
           # do nothing
         end
