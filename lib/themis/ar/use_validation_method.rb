@@ -50,7 +50,7 @@ module Themis
         end
 
         association = @model.association(association_name)
-        return unless association.loaded?
+        return if (!association.loaded? && !association.owner.new_record?)
 
         target = association.target
         case target
