@@ -4,10 +4,13 @@ module Themis
   module AR
     extend ActiveSupport::Autoload
 
+    autoload :Callbacks
+    autoload :AssociationExtension
     autoload :BaseExtension
     autoload :ModelProxy
     autoload :ValidationSet
     autoload :HasValidationMethod
     autoload :UseValidationMethod
+    autoload :UseNestedValidationOnMethod
   end  # module AR
 end  # module Themis

@@ -42,18 +42,24 @@ module Themis
       private :affect_associations
 
       # Make an association use new validation set.
+      # Affect associations that are already loaded.
       # @param [Symbol] association_name
       def affect_association(association_name)
-        association = @model.send(association_name)
-        case association
+        unless @model.reflections.has_key?(association_name)
+          raise("`#{association_name}` is not an association on #{@model.class}")
+        end
+
+        association = @model.association(association_name)
+        return if (!association.loaded? && !@model.new_record?)
+
+        target = association.target
+        case target
         when Array, ActiveRecord::Associations::CollectionProxy
-          association.each {|obj| obj.send(:use_validation, @new_name) }
+          target.each {|obj| obj.send(:use_validation, @new_name) }
         when ActiveRecord::Base
-          association.send(:use_validation, @new_name)
-        when NilClass
-          # do nothing
+          target.send(:use_validation, @new_name)
         else
-          raise("Don't know how to set themis_validation on `#{association.inspect}`")
+          # do nothing
         end
       end
       private :affect_association

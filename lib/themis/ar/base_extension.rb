@@ -14,6 +14,7 @@ module Themis
       def self.included(base)
         base.extend         ClassMethods
         base.send :include, InstanceMethods
+        base.send :include, Callbacks
 
         base.class_eval(<<-eoruby, __FILE__, __LINE__+1)
           attr_reader :themis_validation
@@ -83,15 +84,7 @@ module Themis
           deep_nested  = args.extract_options!
           associations = args + deep_nested.keys
 
-          # Set themis_default_nested for current model
-          self.themis_default_nested = associations unless associations.empty?
-
-          # Iterate over associations and recursively call #use_nested_validation_on
-          deep_nested.each do |association_name, nested|
-            reflection  = reflect_on_association(association_name)
-            model_class = reflection.class_name.constantize
-            model_class.use_nested_validation_on(nested)
-          end
+          UseNestedValidationOnMethod.new(self, associations, deep_nested).execute
         end
       end  # module ClassMethods
 
