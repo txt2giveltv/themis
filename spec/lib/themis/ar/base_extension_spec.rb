@@ -251,7 +251,7 @@ describe Themis::AR::BaseExtension do
         context 'when nested option is not an association' do
           it 'should raise an error' do
             expect { @author.use_validation :no_association }.
-              to raise_error(RuntimeError, %q[`name` is not association on Author])
+              to raise_error(RuntimeError, %q[`name` is not an association on Author])
           end
         end
       end

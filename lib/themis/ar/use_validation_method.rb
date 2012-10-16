@@ -46,7 +46,7 @@ module Themis
       # @param [Symbol] association_name
       def affect_association(association_name)
         unless @model.reflections.has_key?(association_name)
-          raise("`#{association_name}` is not association on #{@model.class}")
+          raise("`#{association_name}` is not an association on #{@model.class}")
         end
 
         association = @model.association(association_name)
