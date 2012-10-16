@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "themis"
-  s.version = "0.0.4"
+  s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Potapov Sergey"]
-  s.date = "2012-10-15"
+  s.date = "2012-10-16"
   s.description = "Flexible and modular validations for ActiveRecord models"
   s.email = ["blake131313@gmail.com"]
   s.extra_rdoc_files = [
@@ -19,9 +19,12 @@ Gem::Specification.new do |s|
     "README.markdown",
     "lib/themis.rb",
     "lib/themis/ar.rb",
+    "lib/themis/ar/association_extension.rb",
     "lib/themis/ar/base_extension.rb",
+    "lib/themis/ar/callbacks.rb",
     "lib/themis/ar/has_validation_method.rb",
     "lib/themis/ar/model_proxy.rb",
+    "lib/themis/ar/use_nested_validation_on_method.rb",
     "lib/themis/ar/use_validation_method.rb",
     "lib/themis/ar/validation_set.rb",
     "lib/themis/engine.rb",
