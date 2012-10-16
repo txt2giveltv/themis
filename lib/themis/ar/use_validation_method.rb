@@ -42,7 +42,7 @@ module Themis
       private :affect_associations
 
       # Make an association use new validation set.
-      # Effect only already loaded associations.
+      # Affect associations that are already loaded.
       # @param [Symbol] association_name
       def affect_association(association_name)
         unless @model.reflections.has_key?(association_name)
