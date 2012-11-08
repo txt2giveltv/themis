@@ -365,6 +365,17 @@ describe Themis::AR::BaseExtension do
           @comment.themis_validation.should == :soft
         end
       end
+
+      context 'without arguments' do
+        it 'should allow to create a validation' do
+          class Post < SpecModel()
+            has_validation :draft
+            has_validation :published
+          end
+          Post.should have_themis_validation :draft
+          Post.should have_themis_validation :published
+        end
+      end
     end
 
     describe "#use_validation" do
