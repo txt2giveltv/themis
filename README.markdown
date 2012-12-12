@@ -102,6 +102,19 @@ has_validation :hard, SoftValidation do |model|
 end
 ```
 
+##### Multiple validations with one block or module:
+
+```ruby
+# declare :soft and :hard validation
+has_validation :soft, :hard, SoftValidation
+
+# exnted :hard validation
+has_validation :hard do |model|
+  model.validate_presence_of :email
+end
+```
+
+
 ##### Option `:default`:
 
 ```ruby

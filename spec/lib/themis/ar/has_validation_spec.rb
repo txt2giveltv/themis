@@ -170,13 +170,21 @@ describe "ActiveRecord::Base" do
     end
 
     context 'when validation with given name already defined' do
-      it 'should warn' do
-        expect {
-          class Article < SpecModel()
-            has_validation :soft, NameValidation
-            has_validation :soft, HardValidation
+      it 'should extend existing validation set' do
+        class Article < SpecModel(:title => :string, :content => :string)
+          has_validation :soft do |model|
+            model.validates_presence_of :title
           end
-        }.to warn_message("WARNING: validation `soft` is already defined on Article")
+
+          has_validation :soft do |model|
+            model.validates_presence_of :content
+          end
+        end
+
+        article = Article.new
+        article.use_validation(:soft)
+        article.should have(1).error_on(:title)
+        article.should have(1).error_on(:content)
       end
     end
 
@@ -254,5 +262,49 @@ describe "ActiveRecord::Base" do
       end
     end
 
+
+    describe 'multiple tags syntax' do
+      before do
+        class Band < SpecModel(:drummer => :string, :bass => :string, :guitar => :string)
+          has_validation(:rhythm_section, :punk_rock) do |model|
+            model.validates_presence_of :drummer
+            model.validates_presence_of :bass
+          end
+
+          has_validation(:punk_rock) do |model|
+            model.validates_presence_of :guitar
+          end
+        end
+      end
+
+      let(:band) { Band.new }
+
+      describe 'rhythm_section validation' do
+        it 'should validate drummer and bass' do
+          band.use_validation(:rhythm_section)
+          band.should have(1).error_on(:drummer)
+          band.should have(1).error_on(:bass)
+        end
+      end
+
+      describe 'punk_rock validation' do
+        it 'should validate drummer, bass and guitar' do
+          band.use_validation(:punk_rock)
+          band.should have(1).error_on(:drummer)
+          band.should have(1).error_on(:bass)
+          band.should have(1).error_on(:guitar)
+        end
+      end
+
+      context 'default option for multiple validations' do
+        it 'should raise' do
+          expect {
+            class Entity < SpecModel()
+              has_validation :soft, :hard, :default => true
+            end
+          }.to raise_error(RuntimeError, "Can not set default to multiple validations")
+        end
+      end
+    end
   end
 end
