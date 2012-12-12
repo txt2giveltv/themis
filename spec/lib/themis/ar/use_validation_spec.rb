@@ -70,7 +70,7 @@ describe "ActiveRecord::Base" do
     context 'with undefined validation' do
       it 'should raise ArgumentError' do
         expect { book.use_validation(:undefined_validation) }.
-          to raise_error(ArgumentError, "Unknown validation: `:undefined_validation`")
+          to raise_error(ArgumentError, "Unknown validation: `:undefined_validation` for Book")
       end
     end
   end

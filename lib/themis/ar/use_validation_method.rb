@@ -11,7 +11,7 @@ module Themis
         @new_name = new_name.to_sym
 
         unless @model.has_themis_validation?(@new_name)
-          raise ArgumentError.new("Unknown validation: `#{@new_name.inspect}`")
+          raise ArgumentError.new("Unknown validation: `#{@new_name.inspect}` for #{model.class}")
         end
 
         @new_validation_set = @model.themis_validation_sets[@new_name]
