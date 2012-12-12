@@ -60,7 +60,7 @@ module Themis
         #   @option options [Symbol, Array<Symbol>] :nested association which should be affect when validation {#use_validation} is called
         def has_validation(*args_and_options, &block)
           options           = args_and_options.extract_options!
-          names, args       = args_and_options.partition { |obj| obj.class.in?(String, Symbol) }
+          names, args       = args_and_options.partition { |obj| obj.class.in?([String, Symbol]) }
           validation_module = args.first
           Themis::AR::HasValidationMethod.new(self, names, validation_module, options, block).execute!
         end
