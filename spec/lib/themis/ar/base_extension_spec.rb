@@ -1,20 +1,7 @@
 require 'spec_helper'
 
 describe Themis::AR::BaseExtension do
-  # Test that message is written to error output.
-  # @param [String] message expected message
-  # @param [Proc] block block of code which causes error message
-  def expect_to_warn(message, &block)
-    @orig_stderr = $stderr
-    $stderr = StringIO.new
-    yield
-    $stderr.string.should include(message)
-  ensure
-    $stderr = @orig_stderr
-  end
-
   describe "ActiveRecord::Base" do
-
     after  { SpecModel.cleanup! }
 
     before do
@@ -125,13 +112,12 @@ describe Themis::AR::BaseExtension do
         end
 
         it 'should warn when default validation is already specified' do
-          msg = 'WARNING: validation `soft` is already used as default on Human'
-          expect_to_warn(msg) do
+          expect {
             class Human < SpecModel(:name => :string)
               has_validation :soft, NameValidation, :default => true
               has_validation :hard, NameValidation, :default => true
             end
-          end
+          }.to warn_message('WARNING: validation `soft` is already used as default on Human')
         end
 
         it 'should affect nested models' do
@@ -186,13 +172,12 @@ describe Themis::AR::BaseExtension do
 
       context 'when validation with given name already defined' do
         it 'should warn' do
-          msg = "WARNING: validation `soft` is already defined on Article"
-          expect_to_warn(msg) do
+          expect {
             class Article < SpecModel()
               has_validation :soft, NameValidation
               has_validation :soft, HardValidation
             end
-          end
+          }.to warn_message("WARNING: validation `soft` is already defined on Article")
         end
       end
 
@@ -314,10 +299,8 @@ describe Themis::AR::BaseExtension do
         end
 
         it 'should warn when default validation is already defined' do
-          msg = "WARNING: default nested validation is already defined: `[:posts, :comments]` on Author"
-          expect_to_warn(msg) do
-            Author.use_nested_validation_on(:comments)
-          end
+          expect { Author.use_nested_validation_on(:comments) }.
+            to warn_message("WARNING: default nested validation is already defined: `[:posts, :comments]` on Author")
         end
       end
 
