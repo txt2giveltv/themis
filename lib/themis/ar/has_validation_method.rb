@@ -4,7 +4,7 @@ module Themis
     # {AR::BaseExtension::ClassMethods#has_validation has_validation} method.
     class HasValidationMethod
       # @param [ActiveRecord::Base] model_class
-      # @param [Symbol] name name of validation set
+      # @param [Symbol] names names of validation sets
       # @param [Module, nil] validation_module
       # @param [Hash, nil] options
       # @param [Proc, nil] block
