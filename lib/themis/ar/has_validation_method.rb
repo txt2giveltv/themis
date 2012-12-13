@@ -39,6 +39,7 @@ module Themis
       private :preinitialize_model_class!
 
 
+      # Add {ValidationSet validation sets} to themis_validation_sets collection.
       def register_validation_sets!
         @names.each do |name|
           @model_class.themis_validation_sets[name] ||= ValidationSet.new(

@@ -42,7 +42,7 @@ module Themis
         #   @option options [Symbol, Array<Symbol>] :nested association which should be affected when validation {#use_validation} is called
         #
         # @overload has_validation(name_1, name_2, options, &block)
-        #   Declare validation 2 sets using block
+        #   Declare validation in 2 sets using a block:
         #   @example
         #     has_validation :soft, :hard :nested => :account, :default => true do |validation|
         #       validation.validates_presence_of :some_date

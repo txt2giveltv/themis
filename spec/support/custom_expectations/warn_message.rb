@@ -1,4 +1,4 @@
-# Verify message written to error output.
+# Verify message is written to error output.
 #
 # @example
 #   expect { warn("Bazinga!) }.to warn_message("Bazinga!")

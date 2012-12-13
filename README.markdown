@@ -108,7 +108,7 @@ end
 # declare :soft and :hard validation
 has_validation :soft, :hard, SoftValidation
 
-# exnted :hard validation
+# extended :hard validation
 has_validation :hard do |model|
   model.validate_presence_of :email
 end
