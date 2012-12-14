@@ -53,11 +53,6 @@ module Themis
       end
       private :register_validation_sets!
 
-      # Add {ValidationSet validation set} to themis_validation_sets collection.
-      #def register_validation_set(name)
-      #end
-      #private :register_validation_set!
-
 
       # Add conditional validation to ActiveRecord model.
       def add_conditional_validators!
