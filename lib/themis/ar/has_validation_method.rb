@@ -51,6 +51,7 @@ module Themis
           )
         end
       end
+      private :register_validation_sets!
 
       # Add {ValidationSet validation set} to themis_validation_sets collection.
       #def register_validation_set(name)
