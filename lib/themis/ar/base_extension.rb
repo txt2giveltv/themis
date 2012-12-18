@@ -41,6 +41,13 @@ module Themis
         #   @option options [Boolean] :default make it validation be used by default
         #   @option options [Symbol, Array<Symbol>] :nested association which should be affected when validation {#use_validation} is called
         #
+        # @overload has_validation(name_1, name_2, options, &block)
+        #   Declare validation in 2 sets using a block:
+        #   @example
+        #     has_validation :soft, :hard :nested => :account, :default => true do |validation|
+        #       validation.validates_presence_of :some_date
+        #     end
+        #
         # @overload has_validation(name, validation_module, options, &block)
         #   Declare validation set on model using {Themis::Validation validation module} or(and) block.
         #   @example
@@ -51,10 +58,11 @@ module Themis
         #   @param [Proc] block proc which receives {ModelProxy} and defines validators
         #   @option options [Boolean] :default make it validation be used by default
         #   @option options [Symbol, Array<Symbol>] :nested association which should be affect when validation {#use_validation} is called
-        def has_validation(name, *validation_module_and_options, &block)
-          options           = validation_module_and_options.extract_options!
-          validation_module = validation_module_and_options.first
-          Themis::AR::HasValidationMethod.new(self, name, validation_module, options, block).execute!
+        def has_validation(*args_and_options, &block)
+          options           = args_and_options.extract_options!
+          names, args       = args_and_options.partition { |obj| obj.class.in?([String, Symbol]) }
+          validation_module = args.first
+          Themis::AR::HasValidationMethod.new(self, names, validation_module, options, block).execute!
         end
 
         # Verify that model has {ValidationSet validation set} with passed name.

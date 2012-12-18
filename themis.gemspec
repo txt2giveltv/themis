@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "themis"
-  s.version = "0.0.5"
+  s.version = "0.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Potapov Sergey"]
-  s.date = "2012-10-16"
+  s.date = "2012-12-18"
   s.description = "Flexible and modular validations for ActiveRecord models"
   s.email = ["blake131313@gmail.com"]
   s.extra_rdoc_files = [
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
     "lib/themis/version.rb"
   ]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "1.8.17"
   s.summary = "Flexible and modular validations for ActiveRecord models"
 
   if s.respond_to? :specification_version then

@@ -4,13 +4,13 @@ module Themis
     # {AR::BaseExtension::ClassMethods#has_validation has_validation} method.
     class HasValidationMethod
       # @param [ActiveRecord::Base] model_class
-      # @param [Symbol] name name of validation set
+      # @param [Symbol] names names of validation sets
       # @param [Module, nil] validation_module
       # @param [Hash, nil] options
       # @param [Proc, nil] block
-      def initialize(model_class, name, validation_module, options, block)
+      def initialize(model_class, names, validation_module, options, block)
         @model_class = model_class
-        @name        = name.to_sym
+        @names       = names
         @module      = validation_module
         @default     = options[:default] || false
         @nested      = options[:nested]
@@ -21,7 +21,7 @@ module Themis
       def execute!
         preinitialize_model_class!
         validate!
-        register_validation_set!
+        register_validation_sets!
         add_conditional_validators!
         add_after_initialize_hook! if @default
         add_before_validation_hook!
@@ -39,25 +39,31 @@ module Themis
       private :preinitialize_model_class!
 
 
-      # Add {ValidationSet validation set} to themis_validation_sets collection.
-      def register_validation_set!
-        @model_class.themis_validation_sets[@name] = ValidationSet.new(
-          :name    => @name,
-          :module  => @module,
-          :default => @default,
-          :nested  => @nested,
-          :block   => @block
-        )
+      # Add {ValidationSet validation sets} to themis_validation_sets collection.
+      def register_validation_sets!
+        @names.each do |name|
+          @model_class.themis_validation_sets[name] ||= ValidationSet.new(
+            :name    => name,
+            :module  => @module,
+            :default => @default,
+            :nested  => @nested,
+            :block   => @block
+          )
+        end
       end
-      private :register_validation_set!
+
+      # Add {ValidationSet validation set} to themis_validation_sets collection.
+      #def register_validation_set(name)
+      #end
+      #private :register_validation_set!
 
 
       # Add conditional validation to ActiveRecord model.
       def add_conditional_validators!
         # Define local variable to have ability to pass its value to lambda
-        validation_name = @name
+        validation_names = @names
 
-        condition   = lambda { |obj| obj.themis_validation == validation_name }
+        condition   = lambda { |obj| obj.themis_validation.in?(validation_names) }
         model_proxy = ModelProxy.new(@model_class, condition)
 
         if @module
@@ -72,8 +78,12 @@ module Themis
 
       # Add after_initialize hook to set default validation.
       def add_after_initialize_hook!
+        if @names.size > 1
+          raise "Can not set default to multiple validations"
+        end
+
         # Define local variable to have ability to pass its value to proc
-        validation_name = @name
+        validation_name = @names.first
         @model_class.themis_default_validation = validation_name
         @model_class.after_initialize { use_validation(validation_name) }
       end
@@ -90,10 +100,6 @@ module Themis
 
       # Run validation to be sure that minimum of necessary parameters were passed.
       def validate!
-        if @model_class.has_themis_validation?(@name)
-          warn "WARNING: validation `#{@name}` is already defined on #{@model_class}"
-        end
-
         if @default && @model_class.themis_default_validation
           warn "WARNING: validation `#{@model_class.themis_default_validation}` " \
                "is already used as default on #{@model_class}"

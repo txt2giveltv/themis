@@ -5,7 +5,7 @@ module Themis
 
       # @param [ActiveRecord::Base] model base mdoel
       # @param [Array<Symbol>] associations associations on base model
-      # @param [Hash<] nested_associations deep nested associations
+      # @param [Hash] nested_associations deep nested associations
       def initialize(model, associations, nested_associations)
         @model = model
         @associations = associations
