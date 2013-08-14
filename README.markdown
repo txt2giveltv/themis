@@ -206,4 +206,4 @@ $BROWSER ./coverage/index.html
 
 ## Copyright
 
-Copyright (c) 2012 TMX Credit.
+Copyright (c) 2013 TMX Credit.
