@@ -43,8 +43,8 @@ Jeweler::Tasks.new do |gem|
   gem.name        = "themis"
   gem.summary     = "Flexible and modular validations for ActiveRecord models"
   gem.description = "Flexible and modular validations for ActiveRecord models"
-  gem.email       = ["blake131313@gmail.com"]
-  gem.authors     = ['Potapov Sergey']
+  gem.email       = ['rubygems@tmxcredit.com', 'blake131313@gmail.com']
+  gem.authors     = ['TMX Credit'            , 'Potapov Sergey']
   gem.files       = Dir["{app,config,db,lib}/**/*"] + Dir['Rakefie', 'README.markdown']
   gem.version     = Themis::VERSION
 end

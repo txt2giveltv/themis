@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
 def ruby19?; RUBY_VERSION =~ /^1\.9/ ; end
 def ruby18?; RUBY_VERSION =~ /^1\.8/ ; end
