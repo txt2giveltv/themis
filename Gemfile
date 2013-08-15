@@ -16,7 +16,6 @@ end
 group :development do
   gem 'jeweler', '~> 1.8', :require => false
   gem 'yard'   ,           :require => false
-  gem 'gemfury',           :require => false
 end
 
 group :test do
