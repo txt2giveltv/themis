@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.version = "0.0.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Potapov Sergey"]
-  s.date = "2012-12-18"
+  s.authors = ["TMX Credit", "Potapov Sergey"]
+  s.date = "2013-08-15"
   s.description = "Flexible and modular validations for ActiveRecord models"
-  s.email = ["blake131313@gmail.com"]
+  s.email = ["rubygems@tmxcredit.com", "blake131313@gmail.com"]
   s.extra_rdoc_files = [
     "README.markdown"
   ]
@@ -33,37 +33,31 @@ Gem::Specification.new do |s|
     "lib/themis/version.rb"
   ]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.17"
+  s.rubygems_version = "2.0.6"
   s.summary = "Flexible and modular validations for ActiveRecord models"
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rails>, ["~> 3.0"])
       s.add_development_dependency(%q<rspec-rails>, ["~> 2.11"])
       s.add_development_dependency(%q<sqlite3>, [">= 0"])
-      s.add_development_dependency(%q<ruby-debug>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8"])
       s.add_development_dependency(%q<yard>, [">= 0"])
-      s.add_development_dependency(%q<gemfury>, [">= 0"])
     else
       s.add_dependency(%q<rails>, ["~> 3.0"])
       s.add_dependency(%q<rspec-rails>, ["~> 2.11"])
       s.add_dependency(%q<sqlite3>, [">= 0"])
-      s.add_dependency(%q<ruby-debug>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8"])
       s.add_dependency(%q<yard>, [">= 0"])
-      s.add_dependency(%q<gemfury>, [">= 0"])
     end
   else
     s.add_dependency(%q<rails>, ["~> 3.0"])
     s.add_dependency(%q<rspec-rails>, ["~> 2.11"])
     s.add_dependency(%q<sqlite3>, [">= 0"])
-    s.add_dependency(%q<ruby-debug>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8"])
     s.add_dependency(%q<yard>, [">= 0"])
-    s.add_dependency(%q<gemfury>, [">= 0"])
   end
 end
 

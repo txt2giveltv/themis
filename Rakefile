@@ -30,13 +30,6 @@ def gem_file_name
   "#{gem_name}-#{gem_version}.gem"
 end
 
-namespace :gemfury do
-  desc "Build version #{gem_version} into the pkg directory and upload to GemFury"
-  task :push => [:build] do
-    sh "fury push pkg/#{gem_file_name} --as=TMXCredit"
-  end
-end
-
 
 require "jeweler"
 Jeweler::Tasks.new do |gem|
