@@ -1,16 +1,15 @@
 source "https://rubygems.org"
 
-def ruby19?; RUBY_VERSION =~ /^1\.9/ ; end
-def ruby18?; RUBY_VERSION =~ /^1\.8/ ; end
+# To test against different rails versions with TravisCI
+rails_version = ENV['RAILS_VERSION'] || '3.2'
 
-gem "rails", "~> 3.0"
+gem "rails", "~> #{rails_version}"
 
 group :development, :test do
   gem 'rspec-rails', '~> 2.11'
   gem 'sqlite3'
 
-  gem 'ruby-debug' if ruby18?
-  gem 'pry'        if ruby19?
+  gem 'pry'
 end
 
 group :development do
@@ -19,5 +18,8 @@ group :development do
 end
 
 group :test do
-  gem 'simplecov', :require => false if ruby19?
+  gem 'simplecov', :require => false
+
+  # To run specs against Rails 4.0, since +attr_accessible+ is used in specs.
+  gem 'protected_attributes' if rails_version =~ /4\.\d/
 end

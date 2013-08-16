@@ -1,5 +1,9 @@
 # Themis
 
+[![Build Status](https://secure.travis-ci.org/TMXCredit/themis.png)](http://travis-ci.org/TMXCredit/themis)
+[![Dependency Status](https://gemnasium.com/TMXCredit/themis.png)](https://gemnasium.com/TMXCredit/themis)
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/TMXCredit/themis)
+
 Modular and switchable validations for ActiveRecord models.
 
 ## Usage

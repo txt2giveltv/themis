@@ -19,6 +19,8 @@ require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rspec/autorun'
 require 'rspec/rails'
 
+require 'protected_attributes' if Rails.version >= "4.0.0"
+
 RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.use_transactional_fixtures = true
