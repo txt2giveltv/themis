@@ -6,7 +6,7 @@ describe Themis::AR::BaseExtension do
       after  { SpecModel.cleanup! }
 
       before do
-        class Article < SpecModel(:id => :integer, :author_id => :integer)
+        class Article < SpecModel(:author_id => :integer)
           attr_accessible :author
           has_many :comments
           belongs_to :author
@@ -15,13 +15,13 @@ describe Themis::AR::BaseExtension do
           has_validation :soft
         end
 
-        class Comment < SpecModel(:id => :integer, :article_id => :integer)
+        class Comment < SpecModel(:article_id => :integer)
           attr_accessible :article
           belongs_to :article
           has_validation :soft
         end
 
-        class Author < SpecModel(:id => :integer)
+        class Author < SpecModel()
           has_many :articles
           has_validation :soft
         end
