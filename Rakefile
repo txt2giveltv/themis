@@ -40,6 +40,7 @@ Jeweler::Tasks.new do |gem|
   gem.authors     = ['TMX Credit'            , 'Potapov Sergey']
   gem.files       = Dir["{app,config,db,lib}/**/*"] + Dir['Rakefie', 'README.markdown']
   gem.version     = Themis::VERSION
+  gem.license     = 'MIT'
 end
 
 APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
