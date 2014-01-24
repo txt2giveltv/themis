@@ -7,7 +7,6 @@ describe Themis::AR::BaseExtension do
 
       before do
         class Article < SpecModel(:author_id => :integer)
-          attr_accessible :author
           has_many :comments
           belongs_to :author
 
@@ -16,7 +15,6 @@ describe Themis::AR::BaseExtension do
         end
 
         class Comment < SpecModel(:article_id => :integer)
-          attr_accessible :article
           belongs_to :article
           has_validation :soft
         end
@@ -27,9 +25,16 @@ describe Themis::AR::BaseExtension do
         end
 
         @author = Author.create
-        @article = Article.create(:author => @author)
-        Comment.create(:article => @article)
-        Comment.create(:article => @article)
+
+        # No mass assignment to keep compatibility with rails 3.
+        @article = Article.new
+        @article.author = @author
+        @article.save!
+
+
+        2.times do
+          Comment.new.tap{ |comment| comment.article = @article }.save!
+        end
       end
 
       context 'after has_many association is loaded' do

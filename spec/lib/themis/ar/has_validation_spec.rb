@@ -121,7 +121,6 @@ describe "ActiveRecord::Base" do
 
       it 'should affect nested models' do
         class Human < SpecModel(:name => :string, :location_id => :integer)
-          attr_accessible :location
           has_validation :soft, NameValidation, :nested => :location, :default => true
           belongs_to :location
         end
@@ -134,7 +133,12 @@ describe "ActiveRecord::Base" do
         end
 
         location = Location.new
-        human    = Human.new(:location => location)
+
+        # No mass assignment to keep compatibility with rails 3.
+        human = Human.new
+        human.location = location
+
+        human.valid?
         human.themis_validation.should == :soft
         location.themis_validation.should == :soft
       end
@@ -149,7 +153,6 @@ describe "ActiveRecord::Base" do
           end
         )
         class Human < SpecModel(:name => :string, :age => :integer)
-          attr_accessible :age
           has_validation :conditional, ConditionalValidation, :default => true
 
           def old?
@@ -157,8 +160,11 @@ describe "ActiveRecord::Base" do
           end
         end
 
-        alter_mann = Human.new(:age => 97)
-        junge      = Human.new(:age => 16)
+        # No mass assignment to keep compatibility with rails 3.
+        alter_mann = Human.new
+        alter_mann.age = 67
+        junge = Human.new
+        junge.age = 16
 
         alter_mann.should be_invalid
         alter_mann.should have(1).error_on :name
@@ -199,7 +205,7 @@ describe "ActiveRecord::Base" do
         end
 
         class Author < SpecModel(:name => :string)
-          attr_accessible :name
+          #attr_accessible :name
 
           has_many :articles
           has_many :reviewed_articles, :class_name => "Article"
@@ -212,7 +218,10 @@ describe "ActiveRecord::Base" do
           has_validation :no_association, NameValidation, :nested => :name
         end
 
-        @author   = Author.new(:name => "Rudyard Kipling")
+        @author = Author.new
+        # No mass assignment to keep compatibility with rails 3.
+        @author.name = "Rudyard Kipling"
+
         @reviewer = Author.new
         @friend   = Author.new
         @article  = Article.new
