@@ -5,6 +5,7 @@
 [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/TMXCredit/themis)
 
 Modular and switchable validations for ActiveRecord models.
+Works with Rails 3 and 4.
 
 ## Usage
 
