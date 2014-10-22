@@ -101,11 +101,11 @@ module Themis
       module InstanceMethods
 
         def valid_for_context? context = nil
-          with_validation(context){ |o| o.valid? }
+          with_validation_context(context){ |o| o.valid? }.errors.empty?
         end
 
         # Use a different validation just for one call
-        def with_validation validation_name
+        def with_validation_context validation_name
           old_validation = @themis_validation
           use_validation(validation_name)
           yield(self)
