@@ -99,6 +99,14 @@ module Themis
 
       # :nodoc:
       module InstanceMethods
+        # Use a different validation just for one call
+        def with_validation validation_name
+          old_validation = @themis_validation
+          use_validation(validation_name)
+          yield(self)
+          @themis_validation = old_validation
+        end
+
         # Switch validation.
         # @param [Symbol] validation_name name of {ValidationSet validation set}
         def use_validation(validation_name)
