@@ -68,6 +68,7 @@ module Themis
         # Verify that model has {ValidationSet validation set} with passed name.
         # @param [Symbol] name name of validation set
         def has_themis_validation?(name)
+          return false unless themis_validation_sets.present?
           themis_validation_sets.keys.include?(name.to_sym)
         end
 
