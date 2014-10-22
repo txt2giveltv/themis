@@ -99,12 +99,18 @@ module Themis
 
       # :nodoc:
       module InstanceMethods
+
+        def valid_for_context? context = nil
+          with_validation(context){ |o| o.valid? }
+        end
+
         # Use a different validation just for one call
         def with_validation validation_name
           old_validation = @themis_validation
           use_validation(validation_name)
           yield(self)
           @themis_validation = old_validation
+          self
         end
 
         # Switch validation.
