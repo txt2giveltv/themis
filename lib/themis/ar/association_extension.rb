@@ -18,7 +18,9 @@ module Themis
       end
 
       included do
-        alias_method_chain :load_target, :after_association_loaded
+        alias_method :load_target_without_after_association_loaded, :load_target
+        alias_method :load_target, :load_target_with_after_association_loaded
+        # alias_method_chain :load_target, :after_association_loaded
       end
     end
   end
