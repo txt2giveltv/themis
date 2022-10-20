@@ -1,9 +1,6 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-# To test against different rails versions with TravisCI
-rails_version = ENV['RAILS_VERSION'] || '>= 3.1'
-
-gem "rails", "#{rails_version}"
+gem 'rails', "#{rails_version}"
 
 group :development, :test do
   gem 'rspec'
@@ -14,10 +11,10 @@ group :development, :test do
 end
 
 group :development do
-  gem 'jeweler', :require => false
-  gem 'yard'   , :require => false
+  gem 'jeweler', require: false
+  gem 'yard'   , require: false
 end
 
 group :test do
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
 end
